@@ -42,12 +42,12 @@ const SetCoupon = props => {
         <div className="row">
           <div className="six columns">
             <label htmlFor="discount">Discount</label>
-            <input name="discount" className="u-full-width" type="number" ref={register({ min: 1, max: 100 })} />
+            <input name="discount" className="u-full-width" type="number" ref={register({ min: 0, max: 100 })} />
             {errors.name && <span>Use a valid input</span>}
           </div>
           <div className="six columns">
             <label htmlFor="price">Price</label>
-            <input name="price" className="u-full-width" type="number" ref={register({ min: 1 })} />
+            <input name="price" className="u-full-width" type="number" ref={register({ min: 0 })} />
             {errors.category && <span>Use a valid input</span>}
           </div>
         </div>
