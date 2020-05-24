@@ -52,8 +52,12 @@ const ListCoupokens = props => {
                         <td>{item.id}</td>
                         <td>{item.discountSize}</td>
                         <td>{item.price}</td>
-                        <td>{item.deadline}</td>
-                        <td>{item.createdAt}</td>
+                        <td>{new Intl.DateTimeFormat('en-GB', {year: 'numeric', month: '2-digit',day: '2-digit'})
+                          .format(item.deadline * 1000)}
+                        </td>
+                        <td>{new Intl.DateTimeFormat('en-GB', {year: 'numeric', month: '2-digit',day: '2-digit'})
+                          .format(item.createdAt * 1000)}
+                        </td>
                         <td>{item.merchantName}</td>
                       </tr>
                   )}

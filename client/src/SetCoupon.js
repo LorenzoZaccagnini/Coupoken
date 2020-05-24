@@ -1,8 +1,14 @@
 import React, { useState } from "react"
 import { useForm } from "react-hook-form";
 
+import { enGB } from 'date-fns/locale'
+import { DatePicker } from 'react-nice-dates'
+import 'react-nice-dates/build/style.css'
+
 const SetCoupon = props => {
   const [stackId, setStackID] = useState(null)
+  const [date, setDate] = useState()
+
   const { drizzle, drizzleState } = props
 
   const { register, handleSubmit, watch, errors } = useForm();
@@ -14,7 +20,8 @@ const SetCoupon = props => {
   const setValue = value => {
     const contract = drizzle.contracts.Coupoken
     // let drizzle know we want to call the `set` method with `value`
-    const stackId = contract.methods["createCoupon"].cacheSend(value.discount, value.price, value.deadline,
+
+    const stackId = contract.methods["createCoupon"].cacheSend(value.discount, value.price, Math.round(date.getTime()/1000),
       value.tokenid, value.uri, {
       from: drizzleState.accounts[0]
     })
@@ -52,12 +59,17 @@ const SetCoupon = props => {
             {errors.category && <span>Use a valid input</span>}
           </div>
         </div>
-        Now: {Date.now()}
         <div className="row">
           <div className="six columns">
-            <label htmlFor="deadline">Deadline Timestamp</label>
-            <input name="deadline" placeholder={Date.now()} className="u-full-width" type="number" ref={register({ min: Date.now() })} />
-            {errors.category && <span>Use a valid input</span>}
+            <label htmlFor="deadline">Deadline</label>
+                <DatePicker date={date} onDateChange={setDate} locale={enGB}>
+                  {({ inputProps, focused }) => (
+                    <input
+                      className={'input' + (focused ? ' -focused' : '')}
+                      {...inputProps}
+                    />
+                  )}
+                </DatePicker>
           </div>
           <div className="six columns">
             <label htmlFor="tokenid">Token ID</label>

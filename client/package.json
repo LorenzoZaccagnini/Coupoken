@@ -3,12 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "date-fns": "^2.14.0",
     "drizzle": "^1.4.0",
     "enzyme": "^3.10.0",
     "enzyme-adapter-react-16": "^1.14.0",
     "react": "^16.8.6",
-    "react-bulma-components": "^3.2.0",
     "react-dom": "^16.8.6",
+    "react-nice-dates": "^3.0.3",
     "react-scripts": "3.0.1",
     "react-test-renderer": "^16.8.6"
   },
