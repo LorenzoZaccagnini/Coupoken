@@ -1,4 +1,4 @@
-import "../node_modules/openzeppelin-solidity/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/ownership/Ownable.sol";
 
 
 contract Pausable is Ownable {

@@ -1,23 +1,31 @@
-pragma solidity ^0.6.0;
+pragma solidity ^0.5.0;
 
-import "../node_modules/openzeppelin-solidity/contracts/token/ERC721/ERC721.sol";
-import "../node_modules/openzeppelin-solidity/contracts/math/SafeMath.sol";
-import "../node_modules/openzeppelin-solidity/contracts/utils/Counters.sol";
+import "@openzeppelin/contracts/token/ERC721/ERC721Full.sol";
+import "@openzeppelin/contracts/token/ERC721/ERC721Mintable.sol";
+
 import "./Pausable.sol";
 
 
 
-contract Coupoken is ERC721, Pausable {
-
-  using SafeMath for uint256;
+contract Coupoken is ERC721Full, ERC721Mintable, Pausable {
 
 
-  constructor() ERC721("Coupoken", "CPK") public {}
+  constructor() ERC721Full("Coupoken", "CPK") public {}
 
   string public myString = "test";
 
+  function set(string memory x) public {
+    myString = x;
+  }
+
   mapping(uint256 => Coupon) public tokenIdToCouponInfo;
   mapping(address => Merchant) public addressToMerchant;
+
+  address[] public merchantList;
+
+  function getMerchantList() external view returns (address[] memory) {
+    return merchantList;
+  }
 
   struct Merchant {
     uint256 createdAt;
@@ -57,21 +65,20 @@ contract Coupoken is ERC721, Pausable {
   }
 
   function createMerchant(
-    string memory _name,
-    string memory _category,
-    string memory _websiteUrl
+    string calldata _name,
+    string calldata _category,
+    string calldata _websiteUrl
   )
-    public
+    external
     isMerchantExistent
     whenNotPaused
   {
     Merchant memory newMerchant= Merchant(now, _name, _category, _websiteUrl, true);
     addressToMerchant[msg.sender] = newMerchant;
+    merchantList.push(msg.sender);
   }
 
-  function set(string memory x) public {
-    myString = x;
-  }
+
 
   function createCoupon(
     uint256 _discountSize,
@@ -92,7 +99,7 @@ contract Coupoken is ERC721, Pausable {
 
   function transferCoupon(address _target, uint256 _tokenId) public whenNotPaused {
        require(ownerOf(_tokenId) == msg.sender, "You are not the owner");
-       _transfer(msg.sender, _target, _tokenId);
+       _transferFrom(msg.sender, _target, _tokenId);
    }
 
 
@@ -148,7 +155,7 @@ contract Coupoken is ERC721, Pausable {
    function buyCoupon(uint256 _tokenId) public  payable {
        address ownerAddress = ownerOf(_tokenId);
        require(msg.value == tokenIdToCouponInfo[_tokenId].price, "You need to send the exact amount of Ether");
-       _transfer(ownerAddress,  msg.sender, _tokenId);
+       _transferFrom(ownerAddress,  msg.sender, _tokenId);
        address payable ownerAddressPayable = _make_payable(ownerAddress);
        ownerAddressPayable.transfer(tokenIdToCouponInfo[_tokenId].price);
    }

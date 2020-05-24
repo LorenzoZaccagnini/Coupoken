@@ -14,7 +14,8 @@ const SetCoupon = props => {
   const setValue = value => {
     const contract = drizzle.contracts.Coupoken
     // let drizzle know we want to call the `set` method with `value`
-    const stackId = contract.methods["createCoupon"].cacheSend(value.name, value.category, value.weburl, {
+    const stackId = contract.methods["createCoupon"].cacheSend(value.discount, value.price, value.deadline,
+      value.tokenid, value.uri, {
       from: drizzleState.accounts[0]
     })
     // save the `stackId` for later reference

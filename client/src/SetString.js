@@ -11,8 +11,9 @@ const SetString = props => {
     }
   }
 
-  const setValue = value => {
-    const contract = drizzle.contracts.Coupoken
+  const setValue = async (value) => {
+    const contract = await drizzle.contracts.Coupoken
+    console.log(drizzleState);
     // let drizzle know we want to call the `set` method with `value`
     const stackId = contract.methods["set"].cacheSend(value, {
       from: drizzleState.accounts[0]
@@ -37,7 +38,7 @@ const SetString = props => {
 
   return (
     <div>
-      <input type="text" onKeyDown={handleKeyDown} />
+      <input type="text" value="test2" onKeyDown={handleKeyDown} />
       <div>{getTxStatus()}</div>
     </div>
   )

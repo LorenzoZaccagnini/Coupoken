@@ -3,6 +3,7 @@ import ReadString from "./ReadString";
 import SetString from "./SetString";
 import SetMerchant from "./SetMerchant";
 import SetCoupon from "./SetCoupon";
+import ListMerchants from "./ListMerchants";
 
 const App = props => {
   const [drizzleReadinessState, setDrizzleReadinessState] = useState({drizzleState: null, loading: true})
@@ -33,6 +34,7 @@ const App = props => {
         <SetString drizzle={drizzle} drizzleState={drizzleReadinessState.drizzleState} />
         <SetMerchant drizzle={drizzle} drizzleState={drizzleReadinessState.drizzleState} />
         <SetCoupon drizzle={drizzle} drizzleState={drizzleReadinessState.drizzleState} />
+        <ListMerchants drizzle={drizzle} drizzleState={drizzleReadinessState.drizzleState} />
       </Fragment>
   )
 }
