@@ -38,7 +38,7 @@ const SetMerchant = props => {
   }
 
   return (
-    <div>
+    <section>
       <h2>Register Merchant</h2>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="row">
@@ -63,7 +63,7 @@ const SetMerchant = props => {
         <input className="button-primary" type="submit" value="Submit" />
       </form>
       <div>{getTxStatus()}</div>
-    </div>
+    </section>
   )
 }
 

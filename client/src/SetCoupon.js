@@ -37,7 +37,7 @@ const SetCoupon = props => {
   }
 
   return (
-    <div>
+    <section>
       <h2>Create Coupon</h2>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="row">
@@ -75,7 +75,7 @@ const SetCoupon = props => {
         <input className="button-primary" type="submit" value="Submit" />
       </form>
       <div>{getTxStatus()}</div>
-    </div>
+    </section>
   )
 }
 

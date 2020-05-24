@@ -8,37 +8,50 @@ const ListMerchants = props => {
 
   useEffect(
     () => {
-      getMerchantAdrs()
+      getMerchants()
     }, [])
 
-  const getMerchantAdrs = async () => {
+  const getMerchants = async () => {
     const contract = await drizzle.contracts.Coupoken
-    const dataKey = await contract.methods["getMerchantList"].cacheCall()
-    await setDataKey(dataKey)
-    console.log("list m");
-    console.log(dataKey);
-    console.log(Coupoken.getMerchantList[dataKey]);
+    let result = await contract.methods.getMerchantList()
+      .call({from: drizzleState.accounts[0]})
 
-    //
-    // for (var i = 1; i <= merchantAddressesList.value.length; i++) {
-    //   const merchant = await contract.methods["getMerchantList"].cacheCall(i - 1)
-    //   setMerchantDetails([...merchantDetails, merchant])
-    // }
+    for (var i = 1; i <= result.length; i++) {
+      console.log(result[i - 1]);
+      let merchant = await contract.methods.getMerchantInfo(result[i - 1])
+        .call({from: drizzleState.accounts[0]})
+      merchant.address = result[i - 1];
+      setMerchantDetails(merchantDetails => [...merchantDetails, merchant]);
+    }
   }
 
-  let merchantAddresses = Coupoken.getMerchantList[dataKey]
 
   return (
     // if it exists, then we display its value
-    <div>
+    <section>
       <h2>List Merchants</h2>
-      {merchantAddresses && merchantAddresses.value.map( item =>
-        <div>
-          {item}
-        </div>
-
-      )}
-    </div>
+      {merchantDetails &&
+          <table className="u-full-width">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Category</th>
+                  <th>URI</th>
+                </tr>
+              </thead>
+              <tbody>
+                  {
+                    merchantDetails.map( item =>
+                      <tr key={item.address}>
+                        <td>{item.merchantName}</td>
+                        <td>{item.category}</td>
+                        <td>{item.websiteUrl}</td>
+                      </tr>
+                  )}
+              </tbody>
+            </table>
+          }
+    </section>
   )
 }
 
