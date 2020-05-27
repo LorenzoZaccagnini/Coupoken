@@ -11,3 +11,32 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+.token_box {
+  width: 300px;
+  border: 1px solid black;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 25px;
+}
+
+.token_box img {
+  width: 100%;
+}
+
+.token_container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+.details_container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+.img_container {
+  align-self: flex-start;
+  margin-bottom: 25px;
+}

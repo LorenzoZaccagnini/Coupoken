@@ -1,3 +1,5 @@
 node_modules
 client/node_modules
-client/src/contracts
+# dotenv environment variables file
+.env
+.env.test

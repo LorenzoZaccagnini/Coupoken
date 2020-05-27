@@ -25,8 +25,28 @@
 // const mnemonic = fs.readFileSync(".secret").toString().trim();
 
 const path = require("path");
-
+require('dotenv').config()
+const HDWalletProvider = require('truffle-hdwallet-provider');
+const mnemonic = process.env.MNEMONIC || "";
 
 module.exports = {
+  networks: {
+    development: {
+      host: "127.0.0.1",
+      port: 9545,
+      network_id: "*" // Match any network id
+    },
+    rinkeby: {
+      provider: function () {
+        return new HDWalletProvider(
+          mnemonic,
+          `https://rinkeby.infura.io/v3/${process.env.INFURA_RINKEBY}`
+        )
+      },
+      network_id: 4,
+      skipDryRun: true
+    }
+  },
   contracts_build_directory: path.join(__dirname, "client/src/contracts"),
+
 };

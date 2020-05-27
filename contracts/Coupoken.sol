@@ -49,8 +49,18 @@ contract Coupoken is ERC721Full, ERC721Mintable, Pausable {
     _;
   }
 
+  modifier isCouponMerchant(uint256 _tokenId) {
+    require(msg.sender == tokenIdToCouponInfo[_tokenId].merchantAdr);
+    _;
+  }
+
   modifier isCouponTradable(uint256 _tokenId) {
     require(tokenIdToCouponInfo[_tokenId].tradable == true, "token locked");
+    _;
+  }
+
+  modifier isCouponOwner (uint256 _tokenId) {
+    require(msg.sender == ownerOf(_tokenId), "you must be the owner");
     _;
   }
 
@@ -97,19 +107,38 @@ contract Coupoken is ERC721Full, ERC721Mintable, Pausable {
       _setTokenURI(_tokenId, _tokenURI);
   }
 
-  function transferCoupon(address _target, uint256 _tokenId) public whenNotPaused {
-       require(ownerOf(_tokenId) == msg.sender, "You are not the owner");
+  function transferCoupon(address _target, uint256 _tokenId) public whenNotPaused isCouponOwner(_tokenId) {
        _transferFrom(msg.sender, _target, _tokenId);
    }
 
 
   function toggleLockCoupon(uint256 _tokenId, bool _tradable)
     public
-    isCouponMerchantOwner(_tokenId)
-    isCouponTradable(_tokenId)
+    isCouponOwner(_tokenId)
   {
     tokenIdToCouponInfo[_tokenId].tradable = _tradable;
   }
+
+  function setPriceCoupon(uint256 _tokenId, uint256 _price)
+    public
+    isCouponOwner(_tokenId)
+  {
+    tokenIdToCouponInfo[_tokenId].price = _price;
+  }
+
+  function setDeadlineCoupon(uint256 _tokenId, uint256 _deadline)
+    public
+    isCouponMerchantOwner(_tokenId)
+  {
+    tokenIdToCouponInfo[_tokenId].deadline = _deadline;
+  }
+
+
+  function claimBackCoupon(address _target, uint256 _tokenId) public whenNotPaused isCouponMerchant(_tokenId) {
+        require(now > tokenIdToCouponInfo[_tokenId].deadline, "You need to wait the deadline");
+        address ownerAddress = ownerOf(_tokenId);
+        _transferFrom(ownerAddress,  msg.sender, _tokenId);
+   }
 
 
   function getCouponInfo (uint _tokenId) public view returns (
@@ -158,6 +187,7 @@ contract Coupoken is ERC721Full, ERC721Mintable, Pausable {
        _transferFrom(ownerAddress,  msg.sender, _tokenId);
        address payable ownerAddressPayable = _make_payable(ownerAddress);
        ownerAddressPayable.transfer(tokenIdToCouponInfo[_tokenId].price);
+       tokenIdToCouponInfo[_tokenId].tradable = false;
    }
 
 

@@ -15,7 +15,7 @@ module.exports = async function(callback) {
   console.log("Create Merchant 2");
   console.log(merchantInfo2);
 
-  await coupoken.createCoupon('50', '1000', '1621814400', '1', 'test.com', {from: user1})
+  await coupoken.createCoupon('0', '100000', '1621814400', '1', 'https://gateway.pinata.cloud/ipfs/QmTjsJZqmQx15nUu1dfhjZ1akU9Y9CUPKbNzXtCKZL9nZD', {from: user1})
   let couponInfo = await coupoken.getCouponInfo(1, {from: user1});
   console.log("Minting complete");
   console.log(couponInfo);

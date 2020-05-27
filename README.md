@@ -89,4 +89,4 @@ Contributions of any kind are welcome!
 
 ## LICENSE
 
-[MIT](LICENSE)
+[agpl-3.0](LICENSE.md)

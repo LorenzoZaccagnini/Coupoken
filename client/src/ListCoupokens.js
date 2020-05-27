@@ -22,7 +22,11 @@ const ListCoupokens = props => {
         .call({from: drizzleState.accounts[0]})
       let merchant = await contract.methods.getMerchantInfo(coupon.merchantAdr)
         .call({from: drizzleState.accounts[0]})
+      let uri = await contract.methods.tokenURI(i)
+        .call({from: drizzleState.accounts[0]})
       coupon.id = i
+      coupon.uri = uri
+      console.log(uri);
       coupon.merchantName = merchant.merchantName
       setCouponsDetails(couponDetails => [...couponDetails, coupon]);
     }
