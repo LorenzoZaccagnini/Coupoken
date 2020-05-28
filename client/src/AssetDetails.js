@@ -26,22 +26,20 @@ const ListAssets = props => {
         from: drizzleState.accounts[0]
       }
     );
-    // save the `stackId` for later reference
     setStackID(stackId);
   };
 
   const { register, handleSubmit, watch, errors } = useForm();
 
   const setPriceCoupon = data => {
-    setPrice(data.price);
+    setPrice(data.id, data.price);
   };
 
-  const setPrice = async price => {
+  const setPrice = async (_id, _price) => {
     const contract = await drizzle.contracts.Coupoken;
-    const stackId = contract.methods["setPriceCoupon"].cacheSend(price, {
+    const stackId = contract.methods["setPriceCoupon"].cacheSend(_id, _price, {
       from: drizzleState.accounts[0]
     });
-    // save the `stackId` for later reference
     setStackID(stackId);
   };
 
@@ -69,16 +67,10 @@ const ListAssets = props => {
   };
 
   const getTxStatus = () => {
-    // get the transaction states from the drizzle state
     const { transactions, transactionStack } = drizzleState;
-
-    // get the transaction hash using our saved `stackId`
     const txHash = transactionStack[stackId];
-
-    // if transaction hash does not exist, don't display anything
     if (!txHash) return null;
     getCoupons();
-    // otherwise, return the transaction status
     return `Transaction status: ${transactions[txHash] &&
       transactions[txHash].status}`;
   };
