@@ -7,25 +7,23 @@ import "./Pausable.sol";
 
 
 
-contract Coupoken is ERC721Full, ERC721Mintable, Pausable {
+contract Coupoken is ERC721Full, Pausable {
 
 
   constructor() ERC721Full("Coupoken", "CPK") public {}
 
-  string public myString = "test";
-
-  function set(string memory x) public {
-    myString = x;
-  }
 
   mapping(uint256 => Coupon) public tokenIdToCouponInfo;
   mapping(address => Merchant) public addressToMerchant;
+  mapping(string => uint256) private tokenCategoryCounter;
 
   address[] public merchantList;
+
 
   function getMerchantList() external view returns (address[] memory) {
     return merchantList;
   }
+
 
   struct Merchant {
     uint256 createdAt;
@@ -33,6 +31,8 @@ contract Coupoken is ERC721Full, ERC721Mintable, Pausable {
     string category;
     string websiteUrl;
     bool enabled;
+    string merchantURI;
+
   }
 
   struct Coupon {
@@ -42,6 +42,7 @@ contract Coupoken is ERC721Full, ERC721Mintable, Pausable {
         uint256 createdAt;
         address merchantAdr;
         bool tradable;
+        string category;
     }
 
   modifier isCouponMerchantOwner(uint256 _tokenId) {
@@ -77,13 +78,14 @@ contract Coupoken is ERC721Full, ERC721Mintable, Pausable {
   function createMerchant(
     string calldata _name,
     string calldata _category,
-    string calldata _websiteUrl
+    string calldata _websiteUrl,
+    string calldata _merchantURI
   )
     external
     isMerchantExistent
     whenNotPaused
   {
-    Merchant memory newMerchant= Merchant(now, _name, _category, _websiteUrl, true);
+    Merchant memory newMerchant= Merchant(now, _name, _category, _websiteUrl, true, _merchantURI);
     addressToMerchant[msg.sender] = newMerchant;
     merchantList.push(msg.sender);
   }
@@ -95,16 +97,18 @@ contract Coupoken is ERC721Full, ERC721Mintable, Pausable {
     uint256 _price,
     uint256 _deadline,
     uint256 _tokenId,
-    string  memory _tokenURI
+    string  calldata _tokenURI,
+    string  calldata _category
   )
-    public
+    external
     isMerchantEnabled
     whenNotPaused
   {
-      Coupon memory newCoupon = Coupon(_discountSize, _price, _deadline, now, msg.sender, true);
+      Coupon memory newCoupon = Coupon(_discountSize, _price, _deadline, now, msg.sender, true, _category);
       tokenIdToCouponInfo[_tokenId] = newCoupon;
       _safeMint(msg.sender, _tokenId);
       _setTokenURI(_tokenId, _tokenURI);
+      tokenCategoryCounter[_category]++;
   }
 
   function transferCoupon(address _target, uint256 _tokenId) public whenNotPaused isCouponOwner(_tokenId) {
@@ -113,42 +117,42 @@ contract Coupoken is ERC721Full, ERC721Mintable, Pausable {
 
 
   function toggleLockCoupon(uint256 _tokenId, bool _tradable)
-    public
+    external
     isCouponOwner(_tokenId)
   {
     tokenIdToCouponInfo[_tokenId].tradable = _tradable;
   }
 
   function setPriceCoupon(uint256 _tokenId, uint256 _price)
-    public
+    external
     isCouponOwner(_tokenId)
   {
     tokenIdToCouponInfo[_tokenId].price = _price;
   }
 
   function setDeadlineCoupon(uint256 _tokenId, uint256 _deadline)
-    public
+    external
     isCouponMerchantOwner(_tokenId)
   {
     tokenIdToCouponInfo[_tokenId].deadline = _deadline;
   }
 
 
-  function claimBackCoupon(address _target, uint256 _tokenId) public whenNotPaused isCouponMerchant(_tokenId) {
+  function claimBackCoupon(address _target, uint256 _tokenId) external whenNotPaused isCouponMerchant(_tokenId) {
         require(now > tokenIdToCouponInfo[_tokenId].deadline, "You need to wait the deadline");
         address ownerAddress = ownerOf(_tokenId);
         _transferFrom(ownerAddress,  msg.sender, _tokenId);
    }
 
 
-  function getCouponInfo (uint _tokenId) public view returns (
+  function getCouponInfo (uint _tokenId) external view returns (
     uint256 discountSize,
     uint256 price,
     uint256 deadline,
     uint256 createdAt,
     address merchantAdr,
     bool tradable,
-    address actualOwner
+    string memory _category
       ) {
       return (
         tokenIdToCouponInfo[_tokenId].discountSize,
@@ -157,23 +161,25 @@ contract Coupoken is ERC721Full, ERC721Mintable, Pausable {
         tokenIdToCouponInfo[_tokenId].createdAt,
         tokenIdToCouponInfo[_tokenId].merchantAdr,
         tokenIdToCouponInfo[_tokenId].tradable,
-        ownerOf(_tokenId)
+        tokenIdToCouponInfo[_tokenId].category
       );
   }
 
-  function getMerchantInfo (address _merchantAdr) public view returns (
+  function getMerchantInfo (address _merchantAdr) external view returns (
     uint256 createdAt,
     string memory merchantName,
     string memory category,
     string memory websiteUrl,
-    bool enabled
+    bool enabled,
+    string memory merchantURI
       ) {
       return (
         addressToMerchant[_merchantAdr].createdAt,
         addressToMerchant[_merchantAdr].name,
         addressToMerchant[_merchantAdr].category,
         addressToMerchant[_merchantAdr].websiteUrl,
-        addressToMerchant[_merchantAdr].enabled
+        addressToMerchant[_merchantAdr].enabled,
+        addressToMerchant[_merchantAdr].merchantURI
       );
   }
 
@@ -181,8 +187,9 @@ contract Coupoken is ERC721Full, ERC721Mintable, Pausable {
        return address(uint160(x));
    }
 
-   function buyCoupon(uint256 _tokenId) public  payable {
+   function buyCoupon(uint256 _tokenId) external  payable {
        address ownerAddress = ownerOf(_tokenId);
+       require(tokenIdToCouponInfo[_tokenId].tradable, "Tradable not enabled");
        require(msg.value == tokenIdToCouponInfo[_tokenId].price, "You need to send the exact amount of Ether");
        _transferFrom(ownerAddress,  msg.sender, _tokenId);
        address payable ownerAddressPayable = _make_payable(ownerAddress);
@@ -212,5 +219,24 @@ contract Coupoken is ERC721Full, ERC721Mintable, Pausable {
             return result;
         }
       }
+
+    function tokensOfCategory(string calldata _category) external view returns(uint256[] memory ownerTokens) {
+        uint256 totalCoupons = totalSupply();
+         if (totalCoupons == 0) {
+             return new uint256[](0);
+         } else {
+             uint256[] memory result = new uint256[](tokenCategoryCounter[_category]);
+             uint256 resultIndex = 0;
+             uint256 couponId;
+
+             for (couponId = 1; couponId <= totalCoupons; couponId++) {
+                 if (keccak256(bytes(_category)) == keccak256(bytes(tokenIdToCouponInfo[couponId].category))) {
+                     result[resultIndex] = couponId;
+                     resultIndex++;
+                 }
+             }
+             return result;
+         }
+       }
 
 }
