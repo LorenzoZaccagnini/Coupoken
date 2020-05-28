@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import TokenCard from "./components/TokenCard";
+import * as _ from "lodash";
 
 const ListAssets = props => {
   const [dataKey, setDataKey] = useState(null);
   const [couponDetails, setCouponsDetails] = useState([]);
-  const { drizzle, drizzleState } = props;
+  const { drizzle, drizzleState, address } = props;
   const { Coupoken } = drizzleState.contracts;
+  const { accountAddress = drizzleState.accounts[0]} = address;
 
   useEffect(() => {
     getCoupons();
@@ -20,7 +22,7 @@ const ListAssets = props => {
   const getCoupons = async () => {
     const contract = await drizzle.contracts.Coupoken;
     let result = await contract.methods
-      .tokensOfOwner(drizzleState.accounts[0])
+      .tokensOfOwner(accountAddress)
       .call({ from: drizzleState.accounts[0] });
     Promise.all(
       result.map(async i => {
@@ -50,10 +52,10 @@ const ListAssets = props => {
 
   return (
     <section>
-      <h2>Your Assets</h2>
+      <h2>Assets</h2>
       <div className="token_container">
         {couponDetails &&
-          couponDetails.map(item => (
+          _.orderBy(couponDetails, "createdAt", "desc").map(item => (
             <TokenCard
               key={item.id}
               item={item}
@@ -66,5 +68,9 @@ const ListAssets = props => {
     </section>
   );
 };
+
+ListAssets.defaultProps = {
+    counter: 0
+}
 
 export default ListAssets;

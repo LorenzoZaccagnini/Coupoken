@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import TokenCard from "./components/TokenCard";
 import { Link } from "react-router-dom";
+import * as _ from "lodash";
 
 const ListTrees = props => {
   const [dataKey, setDataKey] = useState(null);
@@ -48,7 +49,8 @@ const ListTrees = props => {
           setCouponsDetails(couponDetails => [...couponDetails, coupon]);
         }
       })
-    );
+    )
+
   };
 
   const buyCoupon = async (_id, _price) => {
@@ -66,7 +68,7 @@ const ListTrees = props => {
       <h2>Adopt a tree</h2>
       {couponDetails && (
         <div className="token_container">
-          {couponDetails.map(item => (
+          {_.orderBy(couponDetails, "createdAt", "desc").map(item => (
             <TokenCard
               key={item.id}
               item={item}

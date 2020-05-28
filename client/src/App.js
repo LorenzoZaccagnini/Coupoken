@@ -81,6 +81,7 @@ const App = props => {
             <ListAssets
               drizzle={drizzle}
               drizzleState={drizzleReadinessState.drizzleState}
+              address={drizzleReadinessState.drizzleState.accounts[0]}
             />
           </Route>
           <Route exact path="/asset/:id">

@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import "react-nice-dates/build/style.css";
-
 import { useParams } from "react-router-dom";
 
-const ListAssets = props => {
+import ListAssets from "./ListAssets";
+
+const MerchantDetails = props => {
   const [stackId, setStackID] = useState(null);
   const [dataKey, setDataKey] = useState(null);
   const [item, setItemDetails] = useState([]);
@@ -95,8 +96,14 @@ const ListAssets = props => {
           </div>
         </div>
       )}
+      <hr />
+      <ListAssets
+        drizzle={drizzle}
+        drizzleState={drizzleState}
+        address={id}
+      />
     </section>
   );
 };
 
-export default ListAssets;
+export default MerchantDetails;
