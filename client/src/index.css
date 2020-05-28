@@ -14,7 +14,7 @@ code {
 
 .token_box {
   width: 300px;
-  border: 1px solid black;
+  border: 2px solid darkgrey;
   padding: 15px;
   border-radius: 10px;
   margin-bottom: 25px;
@@ -36,7 +36,15 @@ code {
   justify-content: space-around;
 }
 
+.details_box {
+  max-width: 512px;
+}
+
 .img_container {
   align-self: flex-start;
   margin-bottom: 25px;
+}
+
+.img_container img {
+  max-width: 512px;
 }

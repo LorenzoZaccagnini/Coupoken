@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
-const TokenCard = ({ item, account, handleBuy }) => (
+const TokenCard = ({ item, account, handleBuy, handleLock}) => (
   <div className="token_box">
     <h4>{item.data.name}</h4>
     <img src={item.data.image} />
@@ -15,7 +15,9 @@ const TokenCard = ({ item, account, handleBuy }) => (
     <div className="row">
       <div className="four columns">
         <strong>Merchant</strong>
-        <div>{item.merchantName}</div>
+        <Link to={"/merchant/" + item.merchantAdr}>
+          <div>{item.merchantName}</div>
+        </Link>
       </div>
       <div className="four columns">
         <strong>Price</strong>
@@ -55,11 +57,23 @@ const TokenCard = ({ item, account, handleBuy }) => (
     </div>
     <br />
     {item.owner === account ? (
-      <input
-        className="button-primary u-full-width"
-        type="button"
-        value="You are the Owner"
-      />
+      <div>
+        {item.tradable ? (
+          <input
+            className="button-primary u-full-width"
+            type="button"
+            value="Lock Asset"
+            onClick={handleLock}
+          />
+        ) : (
+          <input
+            className="button-primary u-full-width"
+            type="button"
+            value="Unlock Asset"
+            onClick={handleLock}
+          />
+        )}
+      </div>
     ) : (
       <input
         className="button-primary u-full-width"
