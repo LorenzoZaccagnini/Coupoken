@@ -29,6 +29,14 @@ const ListAssets = props => {
     setStackID(stackId);
   };
 
+  const claimBackCoupon = async () => {
+    const contract = await drizzle.contracts.Coupoken;
+    const stackId = contract.methods["claimBackCoupon"].cacheSend(id, {
+      from: drizzleState.accounts[0]
+    });
+    setStackID(stackId);
+  };
+
   const { register, handleSubmit, watch, errors } = useForm();
 
   const setPriceCoupon = data => {
@@ -160,25 +168,50 @@ const ListAssets = props => {
                         value="Change Price"
                       />
                     </form>
-                    <strong>Toggle tradable status</strong>
-                    <br />
-                    <br />
 
-                    {item.tradable ? (
-                      <input
-                        class="button-primary"
-                        type="button"
-                        value="Lock Asset"
-                        onClick={() => toggleLock()}
-                      />
-                    ) : (
-                      <input
-                        class="button-primary"
-                        type="button"
-                        value="Unlock Asset"
-                        onClick={() => toggleLock()}
-                      />
-                    )}
+                    <div className="row">
+                      <div className="six columns">
+                        <strong>Toggle tradable status</strong>
+                        <br />
+                        <br />
+                        {item.tradable ? (
+                          <input
+                            className="button-primary"
+                            type="button"
+                            value="Lock Asset"
+                            onClick={() => toggleLock()}
+                          />
+                        ) : (
+                          <input
+                            className="button-primary"
+                            type="button"
+                            value="Unlock Asset"
+                            onClick={() => toggleLock()}
+                          />
+                        )}
+                      </div>
+
+                      <div className="six columns">
+                        <strong>Claim back</strong>
+                        <br />
+                        <br />
+                        {Date.now() > item.deadline * 1000 ? (
+                          <input
+                            className="button-primary"
+                            type="button"
+                            value="Claim Back"
+                            onClick={() => claimBackCoupon()}
+                          />
+                        ) : (
+                          <input
+                            className=""
+                            type="button"
+                            value="DISABLED"
+                            onClick={null}
+                          />
+                        )}
+                      </div>
+                    </div>
                     <div>{getTxStatus()}</div>
                   </div>
                 )}

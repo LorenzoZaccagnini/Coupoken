@@ -101,6 +101,7 @@ const MerchantDetails = props => {
         drizzle={drizzle}
         drizzleState={drizzleState}
         address={id}
+        getMethod={"tokensOfMerchant"}
       />
     </section>
   );

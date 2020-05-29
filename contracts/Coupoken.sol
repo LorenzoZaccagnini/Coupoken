@@ -15,6 +15,7 @@ contract Coupoken is ERC721Full, Pausable {
 
   mapping(uint256 => Coupon) public tokenIdToCouponInfo;
   mapping(address => Merchant) public addressToMerchant;
+  mapping(address => uint256) private merchantTokensCounter;
   mapping(string => uint256) private tokenCategoryCounter;
 
   address[] public merchantList;
@@ -109,6 +110,7 @@ contract Coupoken is ERC721Full, Pausable {
       _safeMint(msg.sender, _tokenId);
       _setTokenURI(_tokenId, _tokenURI);
       tokenCategoryCounter[_category]++;
+      merchantTokensCounter[msg.sender]++;
   }
 
   function transferCoupon(address _target, uint256 _tokenId) public whenNotPaused isCouponOwner(_tokenId) {
@@ -238,5 +240,27 @@ contract Coupoken is ERC721Full, Pausable {
              return result;
          }
        }
+
+       function tokensOfMerchant(address _merchant) external view returns(uint256[] memory merchantTokens) {
+            uint256 tokenCount = balanceOf(_merchant);
+
+            if (tokenCount == 0) {
+                return new uint256[](0);
+            } else {
+                uint256[] memory result = new uint256[](merchantTokensCounter[_merchant]);
+                uint256 totalCoupons = totalSupply();
+                uint256 resultIndex = 0;
+                uint256 couponId;
+
+                for (couponId = 1; couponId <= totalCoupons; couponId++) {
+                    if (tokenIdToCouponInfo[couponId].merchantAdr == _merchant) {
+                        result[resultIndex] = couponId;
+                        resultIndex++;
+                    }
+                }
+
+                return result;
+            }
+          }
 
 }

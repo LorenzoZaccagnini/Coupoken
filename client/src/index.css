@@ -48,3 +48,11 @@ code {
 .img_container img {
   max-width: 512px;
 }
+
+nav ul {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  flex-direction: row;
+  list-style: none;
+}

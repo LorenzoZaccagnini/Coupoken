@@ -5,9 +5,9 @@ import * as _ from "lodash";
 const ListAssets = props => {
   const [dataKey, setDataKey] = useState(null);
   const [couponDetails, setCouponsDetails] = useState([]);
-  const { drizzle, drizzleState, address } = props;
+  const { drizzle, drizzleState, address, getMethod } = props;
   const { Coupoken } = drizzleState.contracts;
-  const { accountAddress = drizzleState.accounts[0]} = address;
+  const { accountAddress = drizzleState.accounts[0] } = address;
 
   useEffect(() => {
     getCoupons();
@@ -21,9 +21,9 @@ const ListAssets = props => {
   };
   const getCoupons = async () => {
     const contract = await drizzle.contracts.Coupoken;
-    let result = await contract.methods
-      .tokensOfOwner(accountAddress)
-      .call({ from: drizzleState.accounts[0] });
+    let result = await contract.methods[getMethod](accountAddress).call({
+      from: drizzleState.accounts[0]
+    });
     Promise.all(
       result.map(async i => {
         let coupon = await contract.methods
@@ -32,23 +32,22 @@ const ListAssets = props => {
         coupon.owner = await contract.methods
           .ownerOf(i)
           .call({ from: drizzleState.accounts[0] });
-          let merchant = await contract.methods
-            .getMerchantInfo(coupon.merchantAdr)
-            .call({ from: drizzleState.accounts[0] });
-          let uri = await contract.methods
-            .tokenURI(i)
-            .call({ from: drizzleState.accounts[0] });
-          let response = await fetch(uri);
-          let data = await response.json();
-          coupon.id = i;
-          coupon.data = data;
-          coupon.uri = uri;
-          coupon.merchantName = merchant.merchantName;
-          setCouponsDetails(couponDetails => [...couponDetails, coupon]);
+        let merchant = await contract.methods
+          .getMerchantInfo(coupon.merchantAdr)
+          .call({ from: drizzleState.accounts[0] });
+        let uri = await contract.methods
+          .tokenURI(i)
+          .call({ from: drizzleState.accounts[0] });
+        let response = await fetch(uri);
+        let data = await response.json();
+        coupon.id = i;
+        coupon.data = data;
+        coupon.uri = uri;
+        coupon.merchantName = merchant.merchantName;
+        setCouponsDetails(couponDetails => [...couponDetails, coupon]);
       })
     );
   };
-
 
   return (
     <section>
@@ -70,7 +69,7 @@ const ListAssets = props => {
 };
 
 ListAssets.defaultProps = {
-    counter: 0
-}
+  counter: 0
+};
 
 export default ListAssets;

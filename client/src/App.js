@@ -53,20 +53,22 @@ const App = props => {
         <br />
         <br />
 
-        <ul>
-          <li>
-            <Link to="/">List trees</Link>
-          </li>
-          <li>
-            <Link to="/myassets">Your Assets</Link>
-          </li>
-          <li>
-            <Link to="/setcoupon">Create Coupon</Link>
-          </li>
-          <li>
-            <Link to="/setmerchant">Create Merchant</Link>
-          </li>
-        </ul>
+        <nav className="menu">
+          <ul>
+            <li>
+              <Link to="/">List trees</Link>
+            </li>
+            <li>
+              <Link to="/myassets">Your Assets</Link>
+            </li>
+            <li>
+              <Link to="/setcoupon">Create Coupon</Link>
+            </li>
+            <li>
+              <Link to="/setmerchant">Create Merchant</Link>
+            </li>
+          </ul>
+        </nav>
 
         <hr />
         <br />
@@ -82,6 +84,7 @@ const App = props => {
               drizzle={drizzle}
               drizzleState={drizzleReadinessState.drizzleState}
               address={drizzleReadinessState.drizzleState.accounts[0]}
+              getMethod={"tokensOfOwner"}
             />
           </Route>
           <Route exact path="/asset/:id">
