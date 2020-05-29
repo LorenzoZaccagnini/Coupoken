@@ -37,11 +37,57 @@ const App = props => {
   );
 
   return drizzleReadinessState.loading ? (
-    "Loading Drizzle..."
+    <div>
+      Please install{" "}
+      <a href="https://metamask.io/" target="_blank" rel="noopener noreferrer">
+        Metamask
+      </a>{" "}
+      extension and reload the page
+    </div>
   ) : (
     <Router>
       <div>
-        <h1>Devoleum - Coupoken</h1>
+        <div className="title_logo">
+          <img
+            src={
+              "https://www.devoleum.com/47fa9787d0791533e573aed32e8147a9.png"
+            }
+          />
+          <h1>Devoleum - Coupoken</h1>
+        </div>
+        <div>
+          <a
+            href="https://www.devoleum.com"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Devoleum
+          </a>{" "}
+          team{" "}
+          <a
+            href="https://www.linkedin.com/in/lorenzo-zaccagnini/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Lorenzo Zaccagnini
+          </a>{" "}
+          and{" "}
+          <a
+            href="https://www.linkedin.com/in/elisa-romondia/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Elisa Romondia
+          </a>{" "}
+          developed Coupoken. An open-source DAPP, everyone can improve it and
+          implement it on #ethereum blockchain. Coupoken tokens can be sold
+          and/or transferred as needed, helping businesses to reopen and be
+          sustainable. They can be used in many ways, for an investment that
+          offers a simple discount up to the adoption of fruit trees. Through
+          the integration of oracles, it will also be possible to manage logics
+          external to the blockchain, especially thanks to open banking.
+        </div>
+        <br />
         <div>
           Coupoken allows merchants to receive investments directly from
           customers. The investment is expressed in the form of a coupon, a 721
@@ -66,6 +112,15 @@ const App = props => {
             </li>
             <li>
               <Link to="/setmerchant">Create Merchant</Link>
+            </li>
+            <li>
+              <a
+                href="https://www.devoleum.com/#contacts"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Contact us
+              </a>
             </li>
           </ul>
         </nav>
