@@ -190,31 +190,34 @@ const ListAssets = props => {
                           />
                         )}
                       </div>
-
-                      <div className="six columns">
-                        <strong>Claim back</strong>
-                        <br />
-                        <br />
-                        {Date.now() > item.deadline * 1000 ? (
-                          <input
-                            className="button-primary"
-                            type="button"
-                            value="Claim Back"
-                            onClick={() => claimBackCoupon()}
-                          />
-                        ) : (
-                          <input
-                            className=""
-                            type="button"
-                            value="DISABLED"
-                            onClick={null}
-                          />
-                        )}
-                      </div>
                     </div>
-                    <div>{getTxStatus()}</div>
                   </div>
                 )}
+                {item.merchantAdr === drizzleState.accounts[0] && item.merchantAdr !== item.owner && 
+                  <div className="row">
+                    <div className="six columns">
+                      <strong>Claim back</strong>
+                      <br />
+                      <br />
+                      {Date.now() > item.deadline * 1000 ? (
+                        <input
+                          className="button-primary"
+                          type="button"
+                          value="Claim Back"
+                          onClick={() => claimBackCoupon()}
+                        />
+                      ) : (
+                        <input
+                          className=""
+                          type="button"
+                          value="DISABLED"
+                          onClick={null}
+                        />
+                      )}
+                    </div>
+                  </div>
+                }
+                <div>{getTxStatus()}</div>
               </div>
             </div>
             <br />

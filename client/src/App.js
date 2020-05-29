@@ -83,7 +83,7 @@ const App = props => {
           <a href="https://github.com/LorenzoZaccagnini/Coupoken" target="_blank" rel="noopener noreferrer">
             open-source
           </a>{" "}DAPP, everyone can improve it and
-          implement it on #ethereum blockchain. Coupoken tokens can be sold
+          implement it on ethereum blockchain. Coupoken tokens can be sold
           and/or transferred as needed, helping businesses to reopen and be
           sustainable. They can be used in many ways, for an investment that
           offers a simple discount up to the adoption of fruit trees. Through
