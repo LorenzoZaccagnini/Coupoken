@@ -42,11 +42,16 @@ const App = props => {
 
   return drizzleReadinessState.loading ? (
     <div align="center">
-
-      <h4><a href="https://metamask.io/" target="_blank" rel="noopener noreferrer">
-        Please install Metamask extension and reload the page
-      </a></h4>
-
+      <h4>
+        <a
+          href="https://metamask.io/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Please install Metamask extension and reload the page
+        </a>
+      </h4>
+      Set it on the rinkbey test network
       <div>
         <img
           style={imgStyle}
