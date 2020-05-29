@@ -8,6 +8,7 @@
     "enzyme": "^3.10.0",
     "enzyme-adapter-react-16": "^1.14.0",
     "react": "^16.8.6",
+    "react-code-blocks": "0.0.7",
     "react-dom": "^16.8.6",
     "react-nice-dates": "^3.0.3",
     "react-router": "^5.2.0",

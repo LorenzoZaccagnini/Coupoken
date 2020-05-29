@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
+import UriBlock from "./components/UriBlock";
 
 const SetMerchant = props => {
   const [stackId, setStackID] = useState(null);
@@ -92,6 +93,7 @@ const SetMerchant = props => {
             <input
               name="mURI"
               className="u-full-width"
+              placeholder="https://domain.com/myJson"
               ref={register({ required: true, maxLength: 140 })}
             />
             {errors.mURI && <span>Use a valid input</span>}
@@ -100,6 +102,7 @@ const SetMerchant = props => {
         <input className="button-primary" type="submit" value="Submit" />
       </form>
       <div>{getTxStatus()}</div>
+      <UriBlock />
     </section>
   );
 };
