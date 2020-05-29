@@ -36,13 +36,26 @@ const App = props => {
     [drizzle.store, drizzleReadinessState]
   );
 
+  const imgStyle = {
+    width: "256px"
+  };
+
   return drizzleReadinessState.loading ? (
-    <div>
-      Please install{" "}
-      <a href="https://metamask.io/" target="_blank" rel="noopener noreferrer">
-        Metamask
-      </a>{" "}
-      extension and reload the page
+    <div align="center">
+
+      <h4><a href="https://metamask.io/" target="_blank" rel="noopener noreferrer">
+        Please install Metamask extension and reload the page
+      </a></h4>
+
+      <div>
+        <img
+          style={imgStyle}
+          src={
+            "https://images.unsplash.com/photo-1563551937069-caa966ba3aa8?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=701&q=80"
+          }
+        />
+      </div>
+      <div>Photo by Lachlan Gowen on Unsplash</div>
     </div>
   ) : (
     <Router>
@@ -80,15 +93,20 @@ const App = props => {
             Elisa Romondia
           </a>{" "}
           developed Coupoken. An{" "}
-          <a href="https://github.com/LorenzoZaccagnini/Coupoken" target="_blank" rel="noopener noreferrer">
+          <a
+            href="https://github.com/LorenzoZaccagnini/Coupoken"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             open-source
-          </a>{" "}DAPP, everyone can improve it and
-          implement it on ethereum blockchain. Coupoken tokens can be sold
-          and/or transferred as needed, helping businesses to reopen and be
-          sustainable. They can be used in many ways, for an investment that
-          offers a simple discount up to the adoption of fruit trees. Through
-          the integration of oracles, it will also be possible to manage logics
-          external to the blockchain, especially thanks to open banking.
+          </a>{" "}
+          DAPP, everyone can improve it and implement it on ethereum blockchain.
+          Coupoken tokens can be sold and/or transferred as needed, helping
+          businesses to reopen and be sustainable. They can be used in many
+          ways, for an investment that offers a simple discount up to the
+          adoption of fruit trees. Through the integration of oracles, it will
+          also be possible to manage logics external to the blockchain,
+          especially thanks to open banking.
         </div>
         <br />
         <div>
