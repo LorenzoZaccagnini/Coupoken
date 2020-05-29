@@ -51,7 +51,7 @@ const App = props => {
           Please install Metamask extension and reload the page
         </a>
       </h4>
-      Set it on the rinkbey test network
+      Set it on the rinkeby test network
       <div>
         <img
           style={imgStyle}
