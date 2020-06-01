@@ -7,15 +7,16 @@ import { useParams } from "react-router-dom";
 
 const ListAssets = props => {
   const [stackId, setStackID] = useState(null);
+  const [cart, setCart] = useState(0);
   const [dataKey, setDataKey] = useState(null);
-  const [item, setCouponsDetails] = useState([]);
+  const [item, setItemDetails] = useState([]);
   const { drizzle, drizzleState } = props;
   const { Coupoken } = drizzleState.contracts;
 
   let { id } = useParams();
 
   useEffect(() => {
-    getCoupons();
+    getItems();
   }, []);
 
   const toggleLock = async () => {
@@ -51,36 +52,62 @@ const ListAssets = props => {
     setStackID(stackId);
   };
 
-  const getCoupons = async () => {
+  const getItems = async () => {
     const contract = await drizzle.contracts.Coupoken;
-    let coupon = await contract.methods
+    let item = await contract.methods
       .getCouponInfo(id)
       .call({ from: drizzleState.accounts[0] });
-    coupon.owner = await contract.methods
+    item.owner = await contract.methods
       .ownerOf(id)
       .call({ from: drizzleState.accounts[0] });
     let merchant = await contract.methods
-      .getMerchantInfo(coupon.merchantAdr)
+      .getMerchantInfo(item.merchantAdr)
       .call({ from: drizzleState.accounts[0] });
     let uri = await contract.methods
       .tokenURI(id)
       .call({ from: drizzleState.accounts[0] });
     let response = await fetch(uri);
     let data = await response.json();
-    coupon.id = id;
-    coupon.data = data;
-    coupon.uri = uri;
-    coupon.merchantName = merchant.merchantName;
-    setCouponsDetails(coupon);
+    item.id = id;
+    item.data = data;
+    item.uri = uri;
+    item.merchantName = merchant.merchantName;
+    if (item.data.menu) {
+      item.data.menu.forEach((el, i) => {
+        item.data.menu[i].qty = 0;
+      });
+    }
+    setItemDetails(item);
   };
 
   const getTxStatus = () => {
     const { transactions, transactionStack } = drizzleState;
     const txHash = transactionStack[stackId];
     if (!txHash) return null;
-    getCoupons();
+    getItems();
     return `Transaction status: ${transactions[txHash] &&
       transactions[txHash].status}`;
+  };
+
+  const handleFoodQty = (index, isAdding, value) => {
+    if (!isAdding && value === 0) {
+      return;
+    }
+    const tempValue = isAdding ? 1 : -1;
+    setCart(cart + item.data.menu[index].price * tempValue);
+    setItemDetails(prevState => ({
+      ...prevState,
+      data: {
+        ...prevState.data,
+        menu: [
+          ...prevState.data.menu.slice(0, index),
+          Object.assign({}, prevState.data.menu[index], {
+            qty: prevState.data.menu[index].qty + tempValue
+          }),
+          ...prevState.data.menu.slice(index + 1)
+        ]
+      }
+    }));
   };
 
   return (
@@ -193,40 +220,101 @@ const ListAssets = props => {
                     </div>
                   </div>
                 )}
-                {item.merchantAdr === drizzleState.accounts[0] && item.merchantAdr !== item.owner && 
-                  <div className="row">
-                    <div className="six columns">
-                      <strong>Claim back</strong>
-                      <br />
-                      <br />
-                      {Date.now() > item.deadline * 1000 ? (
-                        <input
-                          className="button-primary"
-                          type="button"
-                          value="Claim Back"
-                          onClick={() => claimBackCoupon()}
-                        />
-                      ) : (
-                        <input
-                          className=""
-                          type="button"
-                          value="DISABLED"
-                          onClick={null}
-                        />
-                      )}
+                {item.merchantAdr === drizzleState.accounts[0] &&
+                  item.merchantAdr !== item.owner && (
+                    <div className="row">
+                      <div className="six columns">
+                        <strong>Claim back</strong>
+                        <br />
+                        <br />
+                        {Date.now() > item.deadline * 1000 ? (
+                          <input
+                            className="button-primary"
+                            type="button"
+                            value="Claim Back"
+                            onClick={() => claimBackCoupon()}
+                          />
+                        ) : (
+                          <input className="" type="button" value="DISABLED" />
+                        )}
+                      </div>
                     </div>
-                  </div>
-                }
+                  )}
                 <div>{getTxStatus()}</div>
               </div>
             </div>
             <br />
             <br />
           </div>
+          {item.data.menu &&
+            item.data.menu.length > 0 && (
+              <div>
+                <h2>Menu</h2>
+                {item.data.menu.map((food, i) => (
+                  <div key={food.name}>
+                    <div className="row">
+                      <div className="eight columns">
+                        <h5 style={menuStyle.title}>{food.name}</h5>
+                        <div style={menuStyle.desc}>{food.description}</div>
+                        <strong>Price: </strong>
+                        {food.price} Wei
+                      </div>
+                      <div className="two columns">
+                        <input
+                          className="button-primary"
+                          style={menuStyle.actionBtn}
+                          type="button"
+                          value="+"
+                          onClick={() => handleFoodQty(i, true, food.qty)}
+                        />
+                        <br />
+                        Quantity: {food.qty}
+                      </div>
+                      <div className="two columns">
+                        <input
+                          className="button-primary"
+                          style={menuStyle.actionBtn}
+                          type="button"
+                          value="-"
+                          onClick={() => handleFoodQty(i, false, food.qty)}
+                        />
+                      </div>
+                    </div>
+                    <hr />
+                  </div>
+                ))}
+                <div className="row" align="center">
+                  <div className="eight columns">
+                    <span>Total: {cart} Wei</span>
+                  </div>
+                  <div className="four columns" align="left">
+                    <input
+                      className="button-primary"
+                      style={menuStyle.actionBtn}
+                      type="button"
+                      value="Checkout"
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
         </div>
       )}
     </section>
   );
+};
+
+const menuStyle = {
+  title: {
+    marginBottom: "0.5rem"
+  },
+  desc: {
+    color: "grey"
+  },
+  actionBtn: {
+    backgroundColor: "red",
+    borderColor: "#ed0000"
+  }
 };
 
 export default ListAssets;

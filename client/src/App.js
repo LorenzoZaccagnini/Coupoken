@@ -5,6 +5,7 @@ import SetCoupon from "./SetCoupon";
 import ListMerchants from "./ListMerchants";
 import ListCoupokens from "./ListCoupokens";
 import ListTrees from "./ListTrees";
+import ListRestaurants from "./ListRestaurants";
 import ListAssets from "./ListAssets";
 import AssetDetails from "./AssetDetails";
 import MerchantDetails from "./MerchantDetails";
@@ -131,6 +132,9 @@ const App = props => {
               <Link to="/">List trees</Link>
             </li>
             <li>
+              <Link to="/category/Restaurant">List Restaurants</Link>
+            </li>
+            <li>
               <Link to="/myassets">Your Assets</Link>
             </li>
             <li>
@@ -156,6 +160,12 @@ const App = props => {
         <Switch>
           <Route exact path="/">
             <ListTrees
+              drizzle={drizzle}
+              drizzleState={drizzleReadinessState.drizzleState}
+            />
+          </Route>
+          <Route exact path="/category/:category">
+            <ListRestaurants
               drizzle={drizzle}
               drizzleState={drizzleReadinessState.drizzleState}
             />
