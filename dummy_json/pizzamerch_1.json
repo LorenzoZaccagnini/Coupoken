@@ -1,0 +1,38 @@
+{
+  "name": "Pizzamerch",
+  "description":
+    "The best pizza on ethereum in Rome",
+  "image":
+    "https://raw.githubusercontent.com/LorenzoZaccagnini/Coupoken/master/dummy_json/img/pizzamerch.png",
+  "location": "Rome, Via del Corso",
+  "menu": [
+    {
+      "name": "Pizza margherita",
+      "description":
+        "San Marzano tomatoes, mozzarella, fresh basil, salt and extra-virgin olive oil",
+      "price": "1000"
+    },
+    {
+      "name": "Pizza capricciosa",
+      "description":
+        "mozzarella, tomato, mushrooms, artichokes, salt and extra-virgin olive oil",
+      "price": "2000"
+    },
+    {
+      "name": "Supplì",
+      "description":
+        "mozzarella, tomato, rice, extra-virgin olive oil",
+      "price": "2000"
+    },
+    {
+      "name": "Wine",
+      "description": "An amazing bottle of wine from Italy",
+      "price": "4000"
+    },
+    {
+      "name": "Beer",
+      "description": "An amazing bottle of beer from Italy",
+      "price": "500"
+    }
+  ]
+}
